@@ -1,31 +1,33 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { Exclude, Expose, Type } from "class-transformer";
-import { IsDate, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl } from "class-validator";
 
-
-export class CreateVehicleDto {
-    @IsNumber()
-    @IsNotEmpty()
+@Exclude()
+export class VehicleDto {
+    @Expose()
     @ApiProperty()
-    readonly driverId: number;
+    readonly id: number;
 
-    @IsString()
-    @IsNotEmpty()
+    @Expose()
+    @ApiProperty()
+    readonly driverId: string;
+
+    @Expose()
     @ApiProperty()
     readonly plate: string;
 
-    @IsString()
-    @IsNotEmpty()
+    @Expose()
     @ApiProperty()
     readonly model: string;
 
-    @IsString()
-    @IsNotEmpty()
+    @Expose()
     @ApiProperty()
     readonly type: string;
 
-    @IsString()
-    @IsNotEmpty()
+    @Expose()
     @ApiProperty()
     readonly capacity: string;
+
+    @Expose()
+    @ApiProperty()
+    readonly creationDate: any;
 }

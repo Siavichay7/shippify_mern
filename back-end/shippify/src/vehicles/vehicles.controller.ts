@@ -5,17 +5,17 @@ import { VehiclesService } from './vehicles.service';
 
 
 @Controller('vehicle')
-export class VehicleController {
+export class VehiclesController {
   constructor(private readonly vehiclesService: VehiclesService) {}
 
   @Post()
-  postVehicle(@Body() createCrudDto: CreateVehicleDto) {
-    return this.vehiclesService.createVehicle(createCrudDto);
+  postVehicle(@Body() createVehicleDto: CreateVehicleDto) {
+    return this.vehiclesService.createVehicle(createVehicleDto);
   }
 
-  @Get(':idVehicle')
-  getVehiclesByIdDriver(@Param('id') id: string) {
-    return this.vehiclesService.findVehiclesByIdDriver();
+  @Get(':idDriver')
+  getVehiclesByIdDriver(@Param('id') idDriver: number) {
+    return this.vehiclesService.findVehiclesByIdDriver(idDriver);
   }
 
   @Put(':id')
@@ -24,7 +24,7 @@ export class VehicleController {
   }
 
   @Delete(':id')
-  deleteVehicle(@Param('id') id: string) {
+  deleteVehicle(@Param('id') id: number) {
     return this.vehiclesService.removeVehicle(+id);
   }
 }
