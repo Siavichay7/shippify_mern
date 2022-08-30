@@ -5,14 +5,17 @@ import { plainToClass } from "class-transformer";
 import { Console } from "console";
 import { Repository } from "typeorm";
 import { CreateVehicleDto } from "./dto/create-vehicle.dto";
+import { DriverDto } from "./dto/driver.dto";
 import { UpdateVehicleDto } from "./dto/update-vehicle.dto";
 import { VehicleDto } from "./dto/vehicle.dto";
+import { Driver } from "./entities/driver.entity";
 import { Vehicle } from "./entities/vehicle.entity";
 
 @Injectable()
 export class VehiclesService {
   constructor(
     @InjectRepository(Vehicle) private vehicleRepo: Repository<Vehicle>,
+    @InjectRepository(Driver) private driverRepo: Repository<Driver>,
   ) {}
 
   async createVehicle(createVehicleDto: CreateVehicleDto) {
@@ -21,17 +24,23 @@ export class VehiclesService {
     return plainToClass(VehicleDto, guardarDato);
   }
 
-  async findVehiclesByIdDriver(idDriver: number) {
+  async findVehiclesByIdDriver(idDriver: number): Promise<VehicleDto[]> {
     const vehicles: Vehicle[] = await this.vehicleRepo.find({
       where: { driverId: idDriver },
-      withDeleted: false,
     });
     return vehicles.map((vehicle: Vehicle) =>
       plainToClass(VehicleDto, vehicle),
     );
   }
 
-  async updateVehicle(id: number, changes: UpdateVehicleDto) {
+  async findDrivers(): Promise<DriverDto[]> {
+    const drivers: Driver[] = await this.driverRepo.find({take: 10});
+    return drivers.map((driver: Driver) =>
+      plainToClass(DriverDto, driver),
+    );
+  }
+
+  async updateVehicle(id: number, changes: UpdateVehicleDto): Promise<VehicleDto> {
     // eslint-disable-next-line prettier/prettier
     const vehicle = await this.vehicleRepo.findOneBy({id: id});
     if (!vehicle) {
@@ -42,7 +51,7 @@ export class VehiclesService {
     return plainToClass(VehicleDto, guardarDato);
   }
 
-  async removeVehicle(id: number) {
+  async removeVehicle(id: number): Promise<any> {
     const vehicle = await this.vehicleRepo.findOneBy({id: id});
     if (!vehicle) {
       throw new NotFoundException(`Vehicle #${id} not exist`);
