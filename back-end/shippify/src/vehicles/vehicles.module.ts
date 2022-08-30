@@ -9,6 +9,7 @@ import { VehiclesService } from './vehicles.service';
 @Module({
   imports: [TypeOrmModule.forFeature([Vehicle, Driver, Company])], 
   controllers: [VehiclesController],
-  providers: [VehiclesService]
+  providers: [VehiclesService],
+  exports: [VehiclesService]
 })
 export class VehiclesModule {}

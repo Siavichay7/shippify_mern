@@ -7,28 +7,28 @@ export class Driver {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: 'int', name: 'company_id' })
+    @Column({ type: 'int', name: 'company_id', nullable: true })
     companyId: number;
 
-    @Column({ type: 'varchar' })
-    city: string;
+    @Column({ type: 'int', nullable: true, })
+    city: number;
 
-    @Column({ type: 'varchar', name: "first_name" })
+    @Column({ type: 'varchar', length: 100, name: "first_name", nullable: false })
     firstName: string;
 
-    @Column({ type: 'varchar', name: 'last_name' })
+    @Column({ type: 'varchar', length: 100, name: 'last_name', nullable: true })
     lastName: string;
 
-    @Column({ type: 'varchar' })
+    @Column({ type: 'varchar', unique: true, length: 100, name: 'email', nullable: false })
     email: string;
 
-    @Column({ type: 'varchar' })
+    @Column({ type: 'varchar', length: 20, name: 'phone', nullable: false })
     phone: string;
 
-    @Column({ type: 'varchar', name: 'avatar_url' })
+    @Column({ type: 'varchar', length: 200, nullable: true, name: 'avatar_url' })
     avatarUrl: string;
 
-    @Column({ type: 'varchar' })
+    @Column({ type: 'varchar', length: 20, nullable: false, })
     status: string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

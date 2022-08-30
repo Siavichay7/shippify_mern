@@ -6,19 +6,19 @@ export class Vehicle {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: 'int', name: 'driver_id' })
+    @Column({ type: 'int', name: 'driver_id', nullable: true })
     driverId: number;
 
-    @Column({ type: 'varchar', length: 100 })
+    @Column({ type: 'varchar', length: 100, nullable: false })
     plate: string;
 
-    @Column({ type: 'varchar', length: 100 })
+    @Column({ type: 'varchar', length: 100, nullable: false })
     model: string;
 
-    @Column({ type: 'varchar', length: 20 })
+    @Column({ type: 'varchar', length: 20, nullable: false })
     type: string;
 
-    @Column({ type: 'varchar', length: 20 })
+    @Column({ type: 'varchar', length: 20, nullable: false })
     capacity: string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

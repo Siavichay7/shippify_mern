@@ -6,16 +6,16 @@ export class Company {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: 'varchar' })
+    @Column({ type: 'varchar', nullable: true, unique: true })
     name: string;
 
-    @Column({ type: 'varchar' })
+    @Column({ type: 'varchar', nullable: false, })
     city: string;
 
-    @Column({ type: 'varchar' })
+    @Column({ type: 'varchar', nullable: false,  default: 'active' })
     status: string;
 
-    @Column({ type: 'varchar', name: 'plan_type' })
+    @Column({ type: 'varchar',  nullable: false, name: 'plan_type', default: 'prepaid' })
     planType: string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
