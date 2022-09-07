@@ -21,6 +21,7 @@ export class VehiclesService {
   async createVehicle(createVehicleDto: CreateVehicleDto) {
     const nuevoDato = await this.vehicleRepo.create(createVehicleDto);
     const guardarDato: Vehicle = await this.vehicleRepo.save(nuevoDato);
+    console.log(guardarDato)
     return plainToClass(VehicleDto, guardarDato);
   }
 
@@ -48,6 +49,7 @@ export class VehiclesService {
     }    
     this.vehicleRepo.merge(vehicle, changes);
     const guardarDato: Vehicle = await this.vehicleRepo.save(vehicle);
+    console.log(guardarDato)
     return plainToClass(VehicleDto, guardarDato);
   }
 

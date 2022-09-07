@@ -18,6 +18,7 @@ export class VehiclesController {
   @ApiResponse({ status: 200, description: 'Success.', type:  VehicleDto}) 
   @Post()
   postVehicle(@Body() createVehicleDto: CreateVehicleDto) {
+    console.log("saa: ", createVehicleDto)
     return this.vehiclesService.createVehicle(createVehicleDto);
   }
 
@@ -40,6 +41,7 @@ export class VehiclesController {
   @ApiResponse({ status: 200, description: 'Success.', type:  VehicleDto}) 
   @Put(':id')
   putVehicle(@Param('id') id: string, @Body() updateCrudDto: UpdateVehicleDto) {
+    console.log("saa: ", id, updateCrudDto)
     return this.vehiclesService.updateVehicle(+id, updateCrudDto);
   }
 
