@@ -17,7 +17,7 @@ const columns= [
   { title: 'CAPACIDAD', field: 'capacity'}
 ];
 const baseUrl="http://localhost:3000";
-
+const handleClose = () => setShow(false);
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -51,7 +51,7 @@ function App() {
     model: "",
     type: "",
     capacity: "",
-    driverId: 2
+    driverId: 0
   })
 
   const [driverSeleccionado, setDriverSeleccionado]=useState({
@@ -59,6 +59,7 @@ function App() {
   })
 
   const handleChange=e=>{
+    console.log(e)
     const {name, value}=e.target;
     setVehiculoSeleccionado(prevState=>({
       ...prevState,
@@ -66,13 +67,19 @@ function App() {
     }));
   }
 
+  const changeDriverModal=e=>{
+    console.log(e)
+    setVehiculoSeleccionado(prevState=>({
+      ...prevState,
+      driverId: e.value
+    }));
+  }
+
   const handleChangeDrivers=e=>{
-    console.log(e.value, e.target);
     setDriverSeleccionado(prevState=>({
       ...prevState,
       id: e.value
     }));
-    console.log(driverSeleccionado);
     peticionGet();
   }
 
@@ -99,33 +106,36 @@ function App() {
     })
   }
 
-  const peticionPost=async()=>{
-    await axios.post(baseUrl, vehiculoSeleccionado)
-    .then(response=>{
-      setData(data.concat(response.data));
-      abrirCerrarModalInsertar();
-    }).catch(error=>{
-      console.log(error);
-    })
-  }
-
-  const peticionPut=async()=>{
-    await axios.put(baseUrl+"/"+vehiculoSeleccionado.id, vehiculoSeleccionado)
-    .then(response=>{
-      var dataNueva= data;
-      dataNueva.map(vehiculo=>{
-        if(vehiculo.id===vehiculoSeleccionado.id){
-          vehiculo.vehiculo=vehiculoSeleccionado.vehiculo;
-          vehiculo.genero=vehiculoSeleccionado.genero;
-          vehiculo.ventas=vehiculoSeleccionado.ventas;
-          vehiculo.pais=vehiculoSeleccionado.pais;
-        }
-      });
-      setData(dataNueva);
-      abrirCerrarModalEditar();
-    }).catch(error=>{
-      console.log(error);
-    })
+  const peticion = async(tipo) => {
+    if (tipo == "Insertar") {
+      await axios.post(baseUrl, vehiculoSeleccionado)
+        .then(response => {
+          setData(data.concat(response.data));
+          abrirCerrarModalInsertar();
+        }).catch(error => {
+          console.log(error);
+        })
+    } else if (tipo == "Editar") {
+      const id = vehiculoSeleccionado.id;
+      delete vehiculoSeleccionado.id;
+      delete vehiculoSeleccionado.tableData;
+      await axios.put(baseUrl + "/" + id, vehiculoSeleccionado)
+        .then(response => {          
+          var dataNueva = response;
+          dataNueva.map(vehiculo => {
+            if (vehiculo.id == vehiculoSeleccionado.id) {
+              vehiculo.plate = vehiculoSeleccionado.plate;
+              vehiculo.model = vehiculoSeleccionado.model;
+              vehiculo.type = vehiculoSeleccionado.type;
+              vehiculo.capacity = vehiculoSeleccionado.capacity;
+            }
+          });
+          setData(dataNueva);
+          abrirCerrarModalInsertar();
+        }).catch(error => {
+          console.log(error);
+        })
+    }
   }
 
   const peticionDelete=async()=>{
@@ -163,41 +173,27 @@ function App() {
     peticionGetDrivers();
   }, [])
 
-  const bodyInsertar=(
-    <div className={styles.modal}>
-      <h3>Agregar nuevo vehículo</h3>
+  function alerta (props) {
+   return ( 
+   <div className={styles.modal}>
+      <h3>{props} vehículo</h3> 
       <TextField className={styles.inputMaterial} label="Placa" name="plate" onChange={handleChange}/>
       <br />
       <TextField className={styles.inputMaterial} label="Modelo" name="model" onChange={handleChange}/>          
-<br />
-<TextField className={styles.inputMaterial} label="Tipo" name="type" onChange={handleChange}/>
-      <br />
-<TextField className={styles.inputMaterial} label="Capacidad" name="capacity" onChange={handleChange}/>
-      <br /><br />
-      <div align="right">
-        <Button color="primary" onClick={()=>peticionPost()}>Insertar</Button>
-        <Button onClick={()=>abrirCerrarModalInsertar()}>Cancelar</Button>
-      </div>
-    </div>
-  )
-
-  const bodyEditar=(
-    <div className={styles.modal}>
-      <h3>Editar Vehículo</h3>
-      <TextField className={styles.inputMaterial} label="Placa" name="plate" onChange={handleChange} value={vehiculoSeleccionado&&vehiculoSeleccionado.vehiculo}/>
-      <br />
-      <TextField className={styles.inputMaterial} label="Modelo" name="model" onChange={handleChange} value={vehiculoSeleccionado&&vehiculoSeleccionado.pais}/>          
-<br />
-<TextField className={styles.inputMaterial} label="Tipo" name="type" onChange={handleChange} value={vehiculoSeleccionado&&vehiculoSeleccionado.ventas}/>
-      <br />
-<TextField className={styles.inputMaterial} label="Capacidad" name="capacity" onChange={handleChange} value={vehiculoSeleccionado&&vehiculoSeleccionado.genero}/>
-      <br /><br />
-      <div align="right">
-        <Button color="primary" onClick={()=>peticionPut()}>Editar</Button>
-        <Button onClick={()=>abrirCerrarModalEditar()}>Cancelar</Button>
-      </div>
-    </div>
-  )
+    <br />
+    <TextField className={styles.inputMaterial} label="Tipo" name="type" onChange={handleChange}/>
+          <br />           <br />
+    <Select options={drivers} label="Conductor" name="driverId"  onChange={changeDriverModal} />
+          <br />
+    <TextField className={styles.inputMaterial} label="Capacidad" name="capacity" onChange={handleChange}/>
+          <br /><br />
+          <div align="right">
+            <Button color="primary" onClick={()=>peticion(props)}>{props}</Button>
+            <Button onClick={()=>abrirCerrarModalInsertar()}>Cancelar</Button>
+          </div>
+        </div>
+    )
+  }
 
   const bodyEliminar=(
     <div className={styles.modal}>
@@ -246,20 +242,20 @@ function App() {
 
         <Modal
         open={modalInsertar}
-        onClose={abrirCerrarModalInsertar}>
-          {bodyInsertar}
+        onClose={handleClose}>
+          {alerta("Insertar")}
         </Modal>
 
         
         <Modal
         open={modalEditar}
-        onClose={abrirCerrarModalEditar}>
-          {bodyEditar}
+        onClose={handleClose}>
+          {alerta("Editar")}
         </Modal>
 
         <Modal
         open={modalEliminar}
-        onClose={abrirCerrarModalEliminar}>
+        onClose={handleClose}>
           {bodyEliminar}
         </Modal>
     </div>
